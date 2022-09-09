@@ -21,7 +21,7 @@ This is project #2 of the Interation Systems course.
 ## Used sounds
 
 -   [Combat scenes](https://youtu.be/MvBMwLnv_wY)
--   [Ganar](https://youtu.be/Ah0UJTxwAxg)
--   [Perder](https://youtu.be/bceGNIg-rqI)
+-   [Win](https://youtu.be/Ah0UJTxwAxg)
+-   [Lose](https://youtu.be/bceGNIg-rqI)
 -   [Game Over](https://youtu.be/bug1b0fQS8Y)
 -   [Doorbell](https://youtu.be/TvYcAF3rY2U)
