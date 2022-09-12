@@ -1,4 +1,7 @@
 from openal import *
+from random import randint
+
+from Player import *
 
 # Sounds
 win = oalOpen("./sounds/win.wav")
@@ -7,28 +10,31 @@ gameOver = oalOpen("./sounds/game-over.wav")
 doorbell = oalOpen("./sounds/doorbell.wav")
 combatScenes = oalOpen("./sounds/combat-scenes.wav")
 
-# Keys to press
-actions = {
-    "start-game": "s",
-    "exit-game": "x",
-    "take-gun": "tg",
-    "shoot-gun": "sg",
-    "drop-gun": "dg",
-}
-
 # Start the game
+player = Player()
 combatScenes.play()
-pressedKey = actions["start-game"]
 
+print("---------------------------")
+print("     NOMBRE DEL JUEGO      ")
+print("---------------------------")
+print("1. Jugar (play)")
+print("2. Salir (exit)")
 
-while (pressedKey != actions["exit-game"]):
-
-    if (pressedKey == actions["start-game"]):
-        print("---------------------------")
-        print("         BIENVENIDO        ")
-        print("---------------------------")
+while (True):
 
     pressedKey = input("> ")
+
+    if (pressedKey == "play"):
+        print("Mensaje largo de bienvenida...")
+        print("Mensaje con las reglas del juego...")
+        player.beAttacked()
+    
+    elif (pressedKey == "exit"):
+        print("Saliendo del juego...")
+        break
+
+    else:
+        print("Por favor, elige una opción válida")
 
 # Release resources
 oalQuit()
