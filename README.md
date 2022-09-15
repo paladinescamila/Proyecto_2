@@ -1,24 +1,24 @@
 # Sound Game
 
-This is project #2 of the Interation Systems course.
+Este es el proyecto #2 de la asignatura "Sistemas de Interacción".
 
-## Authors
+## Autores
 
 -   Andrés Velasquez
 -   Camila Paladines
 
-## Execution
+## Ejecución
 
-1. Install PyOpenAL
+1. Instalar PyOpenAL
     ```
     pip install PyOpenAL
     ```
-2. Run the project
+2. Correr el proyecto
     ```
     python main.py
     ```
 
-## Used sounds
+## Sonidos usados
 
 -   [Combat scenes](https://youtu.be/MvBMwLnv_wY)
 -   [Win](https://youtu.be/Ah0UJTxwAxg)

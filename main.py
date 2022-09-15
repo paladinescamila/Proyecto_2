@@ -3,38 +3,36 @@ from random import randint
 
 from Player import *
 
-# Sounds
-win = oalOpen("./sounds/win.wav")
-lose = oalOpen("./sounds/lose.wav") 
-gameOver = oalOpen("./sounds/game-over.wav")
-doorbell = oalOpen("./sounds/doorbell.wav")
-combatScenes = oalOpen("./sounds/combat-scenes.wav")
+from gameUI import *
+from gameSettings import *
+from gameSounds import *
+
+# Player game states
+# - starting-game
+# - changing-settings
+# - exiting-game
+# - attacking
+# - being-attacked
+# - picking-weapon
+# - picking-potion
+# - saving-weapon
+# - saving-potion
+# - fighting-for-the-crown
+# - wining
+# - losing
+# - game-over
+playerState = "in-game-menu"
 
 # Start the game
+background.play()
+
 player = Player()
-combatScenes.play()
+printWelcomeMessage(player.lifes, player.points)
+printPlayerState(player)
 
-print("---------------------------")
-print("     NOMBRE DEL JUEGO      ")
-print("---------------------------")
-print("1. Jugar (play)")
-print("2. Salir (exit)")
-
-while (True):
-
-    pressedKey = input("> ")
-
-    if (pressedKey == "play"):
-        print("Mensaje largo de bienvenida...")
-        print("Mensaje con las reglas del juego...")
-        player.beAttacked()
-    
-    elif (pressedKey == "exit"):
-        print("Saliendo del juego...")
-        break
-
-    else:
-        print("Por favor, elige una opción válida")
+while (playerState != "exiting-game"):
+    # player.beAttacked()
+    printWithTime("¿Qué quieres hacer?", "question")
 
 # Release resources
 oalQuit()

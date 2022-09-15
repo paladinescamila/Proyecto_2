@@ -16,3 +16,9 @@ class Potion:
   def __init__(self, name, effect):
     self.name = name
     self.effect = effect
+
+potions = [
+    Potion("rehabilitar", 50),
+    Potion("debilitar", 0),
+    Potion("vida", 1)
+]
