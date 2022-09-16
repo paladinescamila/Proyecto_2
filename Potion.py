@@ -1,12 +1,13 @@
 class Potion:
-  
-  def __init__(self, name, description):
-    self.name = name
-    self.description = description
+
+    def __init__(self, name, description, value):
+        self.name = name
+        self.description = description
+        self.value = value
 
 potions = [
-  Potion("Fenix", "Gana una vida"),
-  Potion("Suerte de los dioses", "Gana 200 puntos"),
-  Potion("Poder", "Gana 100 puntos"),
-  Potion("Oportunidad", "Gana 50 puntos"),
+    Potion("Fenix", "Has renacido de las cenizas.", 1),
+    Potion("Poder", "Se te ha otorgado el poder de los dioses.", 300),
+    Potion("Suerte de los dioses", "Los dioses te han bendecido.", 200),
+    Potion("Oportunidad", "Aprovechaste la oportunidad.", 100)
 ]
