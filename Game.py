@@ -8,7 +8,7 @@ GAME_NAME = "BATTLE GAME 1.0"
 BIG_STRING_LENGTH = 100
 MEDIUM_STRING_LENGTH = 50
 
-class Player:
+class Game:
 
     def __init__(self):
         self.lifes = 3
@@ -16,7 +16,7 @@ class Player:
         self.weapons = [random.choice(weapons)]
         self.potions = [random.choice(potions)]
         self.wonnedBattles = 0
-        self.state = "showing-menu"
+        self.state = "menu"
         self.input = None
 
 
@@ -34,7 +34,12 @@ class Player:
         left = spaces // 2
         right = spaces - left
 
-        print(f'{"-" * length}\n{" " * spacesLeft}{title}{" " * right}\n{"-" * length}')
+        print(f'{"-" * length}\n{" " * left}{title}{" " * right}\n{"-" * length}')
+
+    
+    def goToState(self, state):
+        self.state = state
+        self.input = None
 
 
     def showMenu(self):
@@ -45,15 +50,14 @@ class Player:
         print("4. Salir")
         self.askToPlayer("¿Qué quieres hacer?")
 
-        if (self.input == "1"): self.state = "in-game"
-        elif (self.input == "2"): self.state = "in-settings"
-        elif (self.input == "3"): self.state = "in-rules"
-        elif (self.input == "4"): self.state = "exiting-game"
+        if (self.input == "1"): self.goToState("game")
+        elif (self.input == "2"): self.goToState("settings")
+        elif (self.input == "3"): self.goToState("rules")
+        elif (self.input == "4"): self.goToState("exit")
 
 
     def showGame(self):
-        self.showHistory()
-        self.walking()
+        self.goToState("history")
 
 
     def showHistory(self):
@@ -80,14 +84,14 @@ class Player:
         self.showMessage("Sales de la casa y escuchas que hay un rio a tu derecha.")
 
 
-    def walking(self):
+    def walk(self):
         self.showMessage("Estas caminando...")
 
         foundPotion = random.choice([True, False])
-        if (foundPotion): self.goToState("found-potion")
+        if (foundPotion): self.goToState("find-potion")
 
         isAttacked = random.choice([True, False])
-        if (isAttacked): self.goToState("being-attacked")
+        if (isAttacked): self.goToState("battle")
 
 
     def showSettings(self):
@@ -97,9 +101,9 @@ class Player:
         print("3. Volver al menú")
         self.askToPlayer("¿Qué quieres hacer?")
 
-        if (self.input == "1"): self.state = "in-music-settings"
-        elif (self.input == "2"): self.state = "in-sound-settings"
-        elif (self.input == "3"): self.state = "showing-menu"
+        if (self.input == "1"): self.goToState("music-settings")
+        elif (self.input == "2"): self.goToState("sound-settings")
+        elif (self.input == "3"): self.goToState("menu")
 
 
     def showMusicSettings(self):
@@ -109,9 +113,9 @@ class Player:
         print("3. Volver a configuraciones")
         self.askToPlayer("¿Qué quieres hacer?")
 
-        if (self.input == "1"): self.state = print("Subiendo volumen")
-        elif (self.input == "2"): self.state = print("Bajando volumen")
-        elif (self.input == "3"): self.state = "in-settings"
+        if (self.input == "1"): print("Subiendo volumen")
+        elif (self.input == "2"): print("Bajando volumen")
+        elif (self.input == "3"): self.goToState("settings")
 
 
     def showSoundSettings(self):
@@ -121,9 +125,9 @@ class Player:
         print("3. Volver a configuraciones")
         self.askToPlayer("¿Qué quieres hacer?")
 
-        if (self.input == "1"): self.state = print("Subiendo volumen")
-        elif (self.input == "2"): self.state = print("Bajando volumen")
-        elif (self.input == "3"): self.state = "in-settings"    
+        if (self.input == "1"): print("Subiendo volumen")
+        elif (self.input == "2"): print("Bajando volumen")
+        elif (self.input == "3"): self.goToState("settings")
 
 
     def showRules(self):
@@ -137,7 +141,7 @@ class Player:
         print("Comienzas el juego con 3 vidas, 200 puntos, un arma y una pocion aleatorias.")
         self.askToPlayer("Presiona ENTER para volver al menú")
 
-        if (self.input == ""): self.goToState("showing-menu")
+        if (self.input == ""): self.goToState("menu")
 
 
     def showStats(self):
@@ -157,12 +161,7 @@ class Player:
             print(f' [{i + 1}] {potion.name}')
 
         self.askToPlayer("Presiona ENTER para continuar")        
-        if (self.input == ""): self.goToState("in-game")
-
-
-    def goToState(self, state):
-        self.state = state
-        self.input = None
+        if (self.input == ""): self.goToState("walk")
 
 
     def updateLifes(self, lifes):
@@ -174,7 +173,7 @@ class Player:
 
         else:
             self.showMessage("Te has quedado sin vidas, has perdido el juego")
-            self.goToState("showing-menu")
+            self.goToState("menu")
 
 
     def updatePoints(self, points):
@@ -187,25 +186,74 @@ class Player:
         else: self.updateLifes(-1)
 
 
-    def attack(self):
+    def findPotion(self):
+        potion = random.choice(potions)
+        self.showMessage(f'Has encontrado una pocion: {potion.name}')
+        self.askToPlayer("¿Quieres guardar la pocion? (s/N)")
+        savePotion = self.input
+
+        if (savePotion == "s"): self.savePotion(potion)
+    
+
+    def savePotion(self, potion):
+        if (len(self.potions) < 50):
+            self.showMessage(f'Guardando la pocion {potion.name}')
+            self.potions.append(potion)
+        else: self.showMessage("No puedes guardar más pociones")
+    
+
+    def usePotion(self, potion):
+        self.showMessage(f'Usando la pocion "{potion.name}"')
+
+        if (potion.name == "Fenix"): self.updateLifes(potion.value)
+        elif (potion.name == "Poder"): self.updatePoints(potion.value)
+        elif (potion.name == "Suerte de los dioses"): self.updatePoints(potion.value)
+        elif (potion.name == "Oportunidad"): self.updatePoints(potion.value)
+        
+        self.showMessage(potion.description)
+        self.potions.remove(potion)
+
+
+    def saveWeapon(self, weapon):
+        if (len(self.weapons) < 2): self.weapons.append(weapon)
+        else:
+            self.showMessage("Tienes 2 armas, debes elegir cuál quieres reemplazar")
+
+            for i in range(len(self.weapons)):
+                weapon = self.weapons[i]
+                print(f' [{i + 1}] {weapon.emoji} {weapon.name} (daño: {weapon.damage})')
+
+            self.showMessage("¿En qué posición quieres guardar la nueva arma?")
+            self.askToPlayer("Elige 1, 2 o X para cancelar")
+            newPosition = self.input
+
+            if (newPosition == 1 or newPosition == 2):
+                self.showMessage(f'Has guardado el arma {weapon.name}')
+                self.weapons[newPosition - 1] = weapon
+        
+        self.showMessage("Ahora tienes las siguientes armas:")
+
+        for i in range(len(self.weapons)):
+            weapon = self.weapons[i]
+            print(f' [{i + 1}] {weapon.emoji} {weapon.name} (daño: {weapon.damage})')
+
+
+    def battle(self):
+        enemyWeapon = random.choice(weapons)
+        self.showMessage(f'El enemigo te ha atacado con el arma {enemyWeapon.name} {enemyWeapon.emoji}')
+
         if (len(self.weapons) == 2):
             self.askToPlayer("¿Qué arma quieres usar?")
             weaponPosition = self.input
 
-            if (weaponPosition == 2): weapon = self.weapons[1]
-            else: weapon = self.weapons[0]
+            if (weaponPosition == 2): myWeapon = self.weapons[1]
+            else: myWeapon = self.weapons[0]
+        
+        else: myWeapon = self.weapons[0]
 
-        else: weapon = self.weapons[0]
+        self.showMessage(f'Usando el arma {myWeapon.name} {myWeapon.emoji}')
+        self.showMessage("Atacando...")
 
-        self.showMessage(f'Usando el arma {weapon.name} {weapon.emoji}')
-        self.showMessage("Atacando...")        
-        return weapon
-
-
-    def beAttacked(self):
-        enemyWeapon = random.choice(weapons)
-        self.showMessage(f'El enemigo te ha atacado con el arma {enemyWeapon.name} {enemyWeapon.emoji}')
-        myWeapon = self.attack()
         win = myWeapon.damage >= enemyWeapon.damage
 
         if (win):
@@ -221,11 +269,11 @@ class Player:
             self.showMessage("¡Has perdido esta batalla!")
             self.updatePoints(-enemyWeapon.damage)
 
-        if (self.wonnedBattles == 10): self.fightForTheCrown()
+        if (self.wonnedBattles == 10): self.finalBattle()
         else: self.beAttacked()
 
 
-    def fightForTheCrown(self):
+    def finalBattle(self):
         self.showMessage("Por fin has llegado al castillo de la montaña")
         self.showMessage("De repente una voz detrás tuyo te sobresalta:")
         self.showMessage("")
@@ -254,59 +302,7 @@ class Player:
 
         if (win):
             self.showMessage("Has ganado el juego")
-            self.goToState("showing-menu")
+            self.goToState("menu")
         else:
             self.showMessage("Has perdido el juego")
-            self.goToState("showing-menu")
-
-
-    def findingPotion(self):
-        potion = random.choice(potions)
-        self.showMessage(f'Has encontrado una pocion: {potion.name}')
-        self.askToPlayer("¿Quieres guardar la pocion? (s/N)")
-        savePotion = self.input
-
-        if (savePotion == "s"): self.savePotion(potion)
-
-
-    def saveWeapon(self, weapon):
-        if (len(self.weapons) < 2): self.weapons.append(weapon)
-        else:
-            self.showMessage("Tienes 2 armas, debes elegir cuál quieres reemplazar")
-
-            for i in range(len(self.weapons)):
-                weapon = self.weapons[i]
-                print(f' [{i + 1}] {weapon.emoji} {weapon.name} (daño: {weapon.damage})')
-
-            self.showMessage("¿En qué posición quieres guardar la nueva arma?")
-            self.askToPlayer("Elige 1, 2 o X para cancelar")
-            newPosition = self.input
-
-            if (newPosition == 1 or newPosition == 2):
-                self.showMessage(f'Has guardado el arma {weapon.name}')
-                self.weapons[newPosition - 1] = weapon
-        
-        self.showMessage("Ahora tienes las siguientes armas:")
-
-        for i in range(len(self.weapons)):
-            weapon = self.weapons[i]
-            print(f' [{i + 1}] {weapon.emoji} {weapon.name} (daño: {weapon.damage})')
-
-
-    def savePotion(self, potion):
-        if (len(self.potions) < 50):
-            self.showMessage(f'Guardando la pocion {potion.name}')
-            self.potions.append(potion)
-        else: self.showMessage("No puedes guardar más pociones")
-
-
-    def usePotion(self, potion):
-        self.showMessage(f'Usando la pocion "{potion.name}"')
-
-        if (potion.name == "Fenix"): self.updateLifes(potion.value)
-        elif (potion.name == "Poder"): self.updatePoints(potion.value)
-        elif (potion.name == "Suerte de los dioses"): self.updatePoints(potion.value)
-        elif (potion.name == "Oportunidad"): self.updatePoints(potion.value)
-        
-        self.showMessage(potion.description)
-        self.potions.remove(potion)
+            self.goToState("menu")
