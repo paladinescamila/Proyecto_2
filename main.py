@@ -3,36 +3,44 @@ from random import randint
 
 from Player import *
 
-from gameUI import *
-from gameSettings import *
-from gameSounds import *
+# Música de fondo
+background = oalOpen("./sounds/combat-scenes.wav")
 
-# Player game states
-# - starting-game
-# - changing-settings
-# - exiting-game
-# - attacking
-# - being-attacked
-# - picking-weapon
-# - picking-potion
-# - saving-weapon
-# - saving-potion
-# - fighting-for-the-crown
-# - wining
-# - losing
-# - game-over
-playerState = "in-game-menu"
+# Sonidos de efecto
+win = oalOpen("./sounds/win.wav")
+lose = oalOpen("./sounds/lose.wav") 
+gameOver = oalOpen("./sounds/game-over.wav")
+doorbell = oalOpen("./sounds/doorbell.wav")
 
-# Start the game
+# Comienza el juego
 background.play()
-
 player = Player()
-printWelcomeMessage(player.lifes, player.points)
-printPlayerState(player)
 
-while (playerState != "exiting-game"):
-    # player.beAttacked()
-    printWithTime("¿Qué quieres hacer?", "question")
+while (True):
 
-# Release resources
+    # Estados generales
+    if (player.state == "showing-menu"): player.showMenu()
+    elif (player.state == "in-game"): player.showGame()
+    elif (player.state == "in-settings"): player.showSettings()
+    elif (player.state == "in-rules"): player.showRules()
+    elif (player.state == "exiting-game"): break
+
+    # Juego
+    elif (player.state == "showing-stats"): player.showStats()
+    elif (player.state == "showing-history"): player.showHistory()
+    elif (player.state == "found-potion"): player.foundPotion()
+    elif (player.state == "saving-potion"): player.savePotion()
+    elif (player.state == "using-potion"): player.usePotion()
+    elif (player.state == "being-attacked"): player.beAttacked()
+    elif (player.state == "fighting-for-the-crown"): player.fightForTheCrown()
+
+    # Configuraciones
+    elif (player.state == "in-music-settings"): player.showMusicSettings()
+    elif (player.state == "in-sound-settings"): player.showSoundSettings()
+
+    # Comandos especiales
+    if (player.input == "stats"): player.goToState("showing-stats")
+    elif (player.input == "exit"): player.goToState("exiting-game")
+
+# Libera recursos
 oalQuit()
