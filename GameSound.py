@@ -2,7 +2,7 @@ import time
 from openal import *
 
 # Música de fondo
-music = oalOpen("./sounds/combat-scenes.wav")
+music = oalOpen("./sounds/music.wav")
 
 # Efectos de sonido
 sounds = {
