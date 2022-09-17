@@ -1,47 +1,35 @@
-from openal import *
-from random import randint
+from openal import oalQuit
+from GameUI import GameUI
 
-from Game import *
+gameUI = GameUI()
 
-# Música de fondo
-background = oalOpen("./sounds/combat-scenes.wav")
+def main():
+    while (True):
 
-# Efectos de sonido
-win = oalOpen("./sounds/win.wav")
-lose = oalOpen("./sounds/lose.wav") 
-gameOver = oalOpen("./sounds/game-over.wav")
-doorbell = oalOpen("./sounds/doorbell.wav")
+        # Estados generales
+        if (gameUI.state == "menu"): gameUI.showMenu()
+        elif (gameUI.state == "game"): gameUI.showGame()
+        elif (gameUI.state == "settings"): gameUI.showSettings()
+        elif (gameUI.state == "rules"): gameUI.showRules()
+        elif (gameUI.state == "exit"): break
 
-# Comienza el juego
-background.play()
-game = Game()
+        # Juego
+        elif (gameUI.state == "stats"): gameUI.showStats()
+        elif (gameUI.state == "history"): gameUI.showHistory()
+        elif (gameUI.state == "walk"): gameUI.walk()
+        elif (gameUI.state == "find-potion"): gameUI.findPotion()
+        elif (gameUI.state == "save-potion"): gameUI.savePotion()
+        elif (gameUI.state == "use-potion"): gameUI.usePotion()
+        elif (gameUI.state == "battle"): gameUI.battle()
+        elif (gameUI.state == "final-battle"): gameUI.finalBattle()
 
-while (True):
+        # Configuraciones
+        elif (gameUI.state == "music-settings"): gameUI.showMusicSettings()
+        elif (gameUI.state == "sound-settings"): gameUI.showSoundSettings()
 
-    # Estados generales
-    if (game.state == "menu"): game.showMenu()
-    elif (game.state == "game"): game.showGame()
-    elif (game.state == "settings"): game.showSettings()
-    elif (game.state == "rules"): game.showRules()
-    elif (game.state == "exit"): break
+        # Comandos especiales
+        if (gameUI.input == "stats"): gameUI.goToState("stats")
+        elif (gameUI.input == "exit"): gameUI.goToState("game")
 
-    # Juego
-    elif (game.state == "stats"): game.showStats()
-    elif (game.state == "history"): game.showHistory()
-    elif (game.state == "walk"): game.walk()
-    elif (game.state == "find-potion"): game.findPotion()
-    elif (game.state == "save-potion"): game.savePotion()
-    elif (game.state == "use-potion"): game.usePotion()
-    elif (game.state == "battle"): game.battle()
-    elif (game.state == "final-battle"): game.finalBattle()
-
-    # Configuraciones
-    elif (game.state == "music-settings"): game.showMusicSettings()
-    elif (game.state == "sound-settings"): game.showSoundSettings()
-
-    # Comandos especiales
-    if (game.input == "stats"): game.goToState("stats")
-    elif (game.input == "exit"): game.goToState("game")
-
-# Libera recursos
+main()
 oalQuit()

@@ -1,14 +1,15 @@
 import random
 import time
 
+from GameSound import gameSound
 from Weapon import weapons
 from Potion import potions
 
-GAME_NAME = "BATTLE GAME 1.0"
+GAME_NAME = "FINDING THE CROWN"
 BIG_STRING_LENGTH = 100
 MEDIUM_STRING_LENGTH = 50
 
-class Game:
+class GameUI:
 
     def __init__(self):
         self.lifes = 3
@@ -26,15 +27,22 @@ class Game:
 
 
     def askToPlayer(self, message):
+        print()
         self.input = input("> " + message + ": ")
+        print()
 
 
-    def showHeader(self, title, length):
-        spaces = length - len(title)
-        left = spaces // 2
-        right = spaces - left
+    def showHeader(self, title, type="small"):
+        if (type == "big"):
+            length = BIG_STRING_LENGTH
+            spaces = length - len(title)
+            left = spaces // 2
+            right = spaces - left
 
-        print(f'{"-" * length}\n{" " * left}{title}{" " * right}\n{"-" * length}')
+            print(f'{"-" * length}\n{" " * left}{title}{" " * right}\n{"-" * length}')
+        else:
+            print(title.upper())
+            print("-" * len(title))
 
     
     def goToState(self, state):
@@ -43,7 +51,7 @@ class Game:
 
 
     def showMenu(self):
-        self.showHeader(GAME_NAME, BIG_STRING_LENGTH)
+        self.showHeader(GAME_NAME, "big")
         print("1. Jugar")
         print("2. Configuraciones")
         print("3. Reglas del juego")
@@ -83,6 +91,7 @@ class Game:
         self.showMessage("Te percatas que no hay nadie más en esa pequeña casa.")
         self.showMessage("Sales de la casa y escuchas que hay un rio a tu derecha.")
 
+        self.goToState("walk")
 
     def walk(self):
         self.showMessage("Estas caminando...")
@@ -108,26 +117,16 @@ class Game:
 
     def showMusicSettings(self):
         self.showHeader("Configuraciones de la música", MEDIUM_STRING_LENGTH)
-        print("1. Subir volumen")
-        print("2. Bajar volumen")
-        print("3. Volver a configuraciones")
-        self.askToPlayer("¿Qué quieres hacer?")
-
-        if (self.input == "1"): print("Subiendo volumen")
-        elif (self.input == "2"): print("Bajando volumen")
-        elif (self.input == "3"): self.goToState("settings")
+        self.askToPlayer("¿Qué volumen quieres ponerle a la música? (0 - 5)")
+        gameSound.setMusicVolume(float(self.input))
+        self.goToState("settings")
 
 
     def showSoundSettings(self):
         self.showHeader("Configuraciones de los efectos de sonido", MEDIUM_STRING_LENGTH)
-        print("1. Subir volumen")
-        print("2. Bajar volumen")
-        print("3. Volver a configuraciones")
-        self.askToPlayer("¿Qué quieres hacer?")
-
-        if (self.input == "1"): print("Subiendo volumen")
-        elif (self.input == "2"): print("Bajando volumen")
-        elif (self.input == "3"): self.goToState("settings")
+        self.askToPlayer("¿Qué volumen quieres ponerle a los efectos de sonido? (0 - 5)")
+        gameSound.setSoundVolume(float(self.input))
+        self.goToState("settings")
 
 
     def showRules(self):
@@ -210,7 +209,7 @@ class Game:
         elif (potion.name == "Suerte de los dioses"): self.updatePoints(potion.value)
         elif (potion.name == "Oportunidad"): self.updatePoints(potion.value)
         
-        self.showMessage(potion.description)
+        self.showMessage(potion.message)
         self.potions.remove(potion)
 
 
@@ -260,6 +259,7 @@ class Game:
             self.showMessage("¡Has ganado esta batalla!")
             self.updatePoints(myWeapon.damage)
             self.wonnedBattles += 1
+            gameSound.playWin()
  
             self.askToPlayer("¿Quieres guardar la arma? (s/n)")
             saveWeapon = self.input
@@ -268,6 +268,7 @@ class Game:
         else:
             self.showMessage("¡Has perdido esta batalla!")
             self.updatePoints(-enemyWeapon.damage)
+            gameSound.playLose()
 
         if (self.wonnedBattles == 10): self.finalBattle()
         else: self.beAttacked()
@@ -302,7 +303,9 @@ class Game:
 
         if (win):
             self.showMessage("Has ganado el juego")
+            gameSound.playWin()
             self.goToState("menu")
         else:
             self.showMessage("Has perdido el juego")
+            gameSound.playGameOver()
             self.goToState("menu")
