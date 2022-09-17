@@ -102,14 +102,13 @@ class GameUI:
         self.goToState("walk")
 
     def walk(self):
-        print("Estás caminando...")
+        print("Vas caminando...")
         gameSound.playWalk()
 
-        foundPotion = random.choice([True, False])
-        if (foundPotion): self.goToState("find-potion")
+        option = random.choice("potion", "battle")
 
-        isAttacked = random.choice([True, False])
-        if (isAttacked): self.goToState("battle")
+        if (option == "potion"): self.goToState("find-potion")
+        else: self.goToState("battle")
 
 
     def showSettings(self):
@@ -154,22 +153,29 @@ class GameUI:
 
     def showStats(self):
 
-        print("❤️ ", "Vidas:", self.lifes)
-        print("⭐", "Puntos:", self.points)
-        print("⚔️ ", "Partidas ganadas:", self.wonnedBattles)
+        print("~" * MEDIUM_STRING_LENGTH)
 
-        print("\n🗡️  Armas", f'({len(self.weapons)}/2):')
+        print(f'❤️  Vidas:{self.lifes}')
+        print(f'⭐ Puntos: {self.points}')
+        print(f'⚔️  Batallas ganadas: {self.wonnedBattles}')
+
+        print(f'🗡️  Armas ({len(self.weapons)}/2):', end=" ")
+
         for i in range(len(self.weapons)):
-            weapon = self.weapons[i]
-            print(f' [{i + 1}] {weapon.emoji} {weapon.name} (daño: {weapon.damage})')
-        
-        print("\n🧪 Pociones", f'({len(self.potions)}/50):')
-        for i in range(len(self.potions)):
-            potion = self.potions[i]
-            print(f' [{i + 1}] {potion.name}')
+            if (i == len(self.weapons) - 1):
+                print(f'{self.weapons[i].name} {self.weapons[i].emoji}.')
+            else:
+                print(f'{self.weapons[i].name} {self.weapons[i].emoji}', end=", ")
 
-        self.askToPlayer("Presiona ENTER para continuar")        
-        if (self.input == ""): self.goToState("walk")
+        print(f'$ 🧪 Pociones ({len(self.potions)}/50):', end=" ")
+
+        for i in range(len(self.potions)):
+            if (i == len(self.potions) - 1):
+                print(f'{self.potions[i].name} {self.potions[i].emoji}.')
+            else:
+                print(f'{self.potions[i].name} {self.potions[i].emoji}', end=", ")
+
+        print("~" * MEDIUM_STRING_LENGTH)
 
 
     def updateLifes(self, lifes):
@@ -182,6 +188,8 @@ class GameUI:
         else:
             self.showMessage("Te has quedado sin vidas, has perdido el juego")
             self.goToState("menu")
+    
+        self.showStats()
 
 
     def updatePoints(self, points):
@@ -192,6 +200,8 @@ class GameUI:
             self.points += points
 
         else: self.updateLifes(-1)
+
+        self.showStats()
 
 
     def findPotion(self):
@@ -231,7 +241,7 @@ class GameUI:
 
             for i in range(len(self.weapons)):
                 weapon = self.weapons[i]
-                print(f' [{i + 1}] {weapon.emoji} {weapon.name} (daño: {weapon.damage})')
+                print(f'[{i + 1}] {weapon.emoji} {weapon.name} (daño: {weapon.damage})')
 
             print("¿En qué posición quieres guardar la nueva arma?")
             self.askToPlayer("Elige 1, 2 o X para cancelar")
@@ -245,7 +255,7 @@ class GameUI:
 
         for i in range(len(self.weapons)):
             weapon = self.weapons[i]
-            print(f' [{i + 1}] {weapon.emoji} {weapon.name} (daño: {weapon.damage})')
+            print(f'[{i + 1}] {weapon.emoji} {weapon.name} (daño: {weapon.damage})')
 
 
     def battle(self):
