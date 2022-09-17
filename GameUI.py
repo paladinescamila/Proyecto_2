@@ -72,6 +72,7 @@ class GameUI:
         self.showMessage("Acabas de despertar en una habitación oscura y sombría.")
         self.showMessage("No recuerdas nada, ni siquiera tu nombre.")
         self.showMessage("De repente observas una caja con una nota encima de ella.")
+        print()
         print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
         print("~   No sabría cómo explicártelo, pero es necesario que en    ~")
         print("~   cuanto despiertes, tomes lo que hay en la caja y vayas   ~")
@@ -82,19 +83,27 @@ class GameUI:
         print("~                                                            ~")
         print("~   Con amor, tu madre.                                      ~")
         print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+        print()
         time.sleep(10)
-        self.showMessage("Abres la caja y encuentras un arma y una pocion.")
-        self.showMessage(f'El arma es: {self.weapons[0].name}')
-        self.showMessage(f'La pocion es: {self.potions[0].name}')
+        print("Abres la caja...")
+        gameSound.playOpenChest()
+        self.showMessage("Observas un arma y una pocion.")
+        self.showMessage(f'El arma es {self.weapons[0].usedName} {self.weapons[0].emoji}')
+        self.showMessage(f'La pocion tiene una etiqueta que dice "{self.potions[0].name} {self.potions[0].emoji}"')
         self.showMessage("Te pones en pie y te diriges a la puerta.")
-        self.showMessage("Abres la puerta y observas un largo pasillo.")
+        print("Abres la puerta...")
+        gameSound.playOpenDoor()
+        self.showMessage("Observas un pequeño pasillo oscuro.")
         self.showMessage("Te percatas que no hay nadie más en esa pequeña casa.")
-        self.showMessage("Sales de la casa y escuchas que hay un rio a tu derecha.")
+        self.showMessage("Sales de la casa.")
+        print("Escuchas que hay un río a tu izquierda...")
+        gameSound.playRiver()
 
         self.goToState("walk")
 
     def walk(self):
-        self.showMessage("Estas caminando...")
+        print("Estás caminando...")
+        gameSound.playWalk()
 
         foundPotion = random.choice([True, False])
         if (foundPotion): self.goToState("find-potion")
@@ -187,22 +196,24 @@ class GameUI:
 
     def findPotion(self):
         potion = random.choice(potions)
-        self.showMessage(f'Has encontrado una pocion: {potion.name}')
-        self.askToPlayer("¿Quieres guardar la pocion? (s/N)")
+        self.showMessage(f'Has encontrado la pocion "{potion.name} {potion.emoji}" ({potion.description})')
+        self.askToPlayer("¿Quieres guardar la pocion? (s/n)")
         savePotion = self.input
 
         if (savePotion == "s"): self.savePotion(potion)
+        self.goToState("walk")
     
 
     def savePotion(self, potion):
         if (len(self.potions) < 50):
-            self.showMessage(f'Guardando la pocion {potion.name}')
+            print(f'Has guardado la pocion "{potion.name} {potion.emoji}"...')
             self.potions.append(potion)
         else: self.showMessage("No puedes guardar más pociones")
     
 
-    def usePotion(self, potion):
-        self.showMessage(f'Usando la pocion "{potion.name}"')
+    def drikPotion(self, potion):
+        print(f'Bebiendo la pocion "{potion.name} {potion.emoji}"...')
+        gameSound.playOpenPotion()
 
         if (potion.name == "Fenix"): self.updateLifes(potion.value)
         elif (potion.name == "Poder"): self.updatePoints(potion.value)
@@ -216,21 +227,21 @@ class GameUI:
     def saveWeapon(self, weapon):
         if (len(self.weapons) < 2): self.weapons.append(weapon)
         else:
-            self.showMessage("Tienes 2 armas, debes elegir cuál quieres reemplazar")
+            print("Tienes 2 armas, debes elegir cuál quieres reemplazar")
 
             for i in range(len(self.weapons)):
                 weapon = self.weapons[i]
                 print(f' [{i + 1}] {weapon.emoji} {weapon.name} (daño: {weapon.damage})')
 
-            self.showMessage("¿En qué posición quieres guardar la nueva arma?")
+            print("¿En qué posición quieres guardar la nueva arma?")
             self.askToPlayer("Elige 1, 2 o X para cancelar")
             newPosition = self.input
 
             if (newPosition == 1 or newPosition == 2):
-                self.showMessage(f'Has guardado el arma {weapon.name}')
+                self.showMessage(f'Has guardado {weapon.usedName}')
                 self.weapons[newPosition - 1] = weapon
         
-        self.showMessage("Ahora tienes las siguientes armas:")
+        print("Ahora tienes las siguientes armas:")
 
         for i in range(len(self.weapons)):
             weapon = self.weapons[i]
@@ -239,7 +250,8 @@ class GameUI:
 
     def battle(self):
         enemyWeapon = random.choice(weapons)
-        self.showMessage(f'El enemigo te ha atacado con el arma {enemyWeapon.name} {enemyWeapon.emoji}')
+        self.showMessage(f'Alguien te ha atacado con {enemyWeapon.usedName} {enemyWeapon.emoji}')
+        self.askToPlayer("Presiona ENTER para atacar")
 
         if (len(self.weapons) == 2):
             self.askToPlayer("¿Qué arma quieres usar?")
@@ -250,28 +262,27 @@ class GameUI:
         
         else: myWeapon = self.weapons[0]
 
-        self.showMessage(f'Usando el arma {myWeapon.name} {myWeapon.emoji}')
-        self.showMessage("Atacando...")
+        self.showMessage(f'Atacando con {myWeapon.usedName} {myWeapon.emoji}')
 
         win = myWeapon.damage >= enemyWeapon.damage
 
         if (win):
-            self.showMessage("¡Has ganado esta batalla!")
+            print("Has ganado esta batalla 😎")
+            gameSound.playWin()
             self.updatePoints(myWeapon.damage)
             self.wonnedBattles += 1
-            gameSound.playWin()
  
             self.askToPlayer("¿Quieres guardar la arma? (s/n)")
             saveWeapon = self.input
             if (saveWeapon == "s"): self.saveWeapon(enemyWeapon)
 
         else:
-            self.showMessage("¡Has perdido esta batalla!")
-            self.updatePoints(-enemyWeapon.damage)
+            print("Has perdido esta batalla ☹️")
             gameSound.playLose()
+            self.updatePoints(-enemyWeapon.damage)
 
         if (self.wonnedBattles == 10): self.finalBattle()
-        else: self.beAttacked()
+        else: self.walk()
 
 
     def finalBattle(self):
@@ -297,15 +308,14 @@ class GameUI:
 
         else: weapon = self.weapons[0]
 
-        self.showMessage(f'Usando el arma {weapon.name}')
-        self.showMessage("Atacando...")
+        self.showMessage(f'Atacando con {weapon.usedName}')
         win = random.choice([True, False])
 
         if (win):
-            self.showMessage("Has ganado el juego")
+            print("Has ganado el juego 😎")
             gameSound.playWin()
             self.goToState("menu")
         else:
-            self.showMessage("Has perdido el juego")
+            print("Has perdido el juego ☹️")
             gameSound.playGameOver()
             self.goToState("menu")

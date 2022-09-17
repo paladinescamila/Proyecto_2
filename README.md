@@ -23,6 +23,11 @@ Este es el proyecto #2 de la asignatura "Sistemas de Interacción". Consiste en 
 A continuación se presentan las fuentes de los sonidos usados en el juego. Se resalta que estos fueron modificados (en duración) para poder ser incluídos.
 
 -   [Música de fondo](https://youtu.be/MvBMwLnv_wY)
--   [Sonido de ganar](https://youtu.be/Ah0UJTxwAxg)
--   [Sonido de perder](https://youtu.be/bceGNIg-rqI)
--   [Sonido de perder el juego](https://youtu.be/bug1b0fQS8Y)
+-   [Sonido: ganar](https://youtu.be/Ah0UJTxwAxg)
+-   [Sonido: perder](https://youtu.be/bceGNIg-rqI)
+-   [Sonido: perder el juego](https://youtu.be/bug1b0fQS8Y)
+-   [Sonido: abrir la puerta](https://youtu.be/92YfzPu3Ukc)
+-   [Sonido: abrir el cofre](https://youtu.be/jEheNftCtyQ)
+-   [Sonido: río](https://youtu.be/iJQ2m99-ot0)
+-   [Sonido: caminar](https://youtu.be/3I2pHlBCWFk)
+-   [Sonido: abrir una poción](https://youtu.be/CjlHt8hIwhg)

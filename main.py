@@ -18,8 +18,6 @@ def main():
         elif (gameUI.state == "history"): gameUI.showHistory()
         elif (gameUI.state == "walk"): gameUI.walk()
         elif (gameUI.state == "find-potion"): gameUI.findPotion()
-        elif (gameUI.state == "save-potion"): gameUI.savePotion()
-        elif (gameUI.state == "use-potion"): gameUI.usePotion()
         elif (gameUI.state == "battle"): gameUI.battle()
         elif (gameUI.state == "final-battle"): gameUI.finalBattle()
 
