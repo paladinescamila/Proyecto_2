@@ -8,8 +8,8 @@ class Potion:
         self.emoji = emoji
 
 potions = [
-    Potion("Fenix", "Obtienes una vida", "Has renacido de las cenizas.", 1, "🐦"),
-    Potion("Poder", "Ganas 330 puntos", "Se te ha otorgado el poder de los dioses.", 300, "🔥"),
-    Potion("Suerte de los dioses", "Ganas 200 puntos", "Los dioses te han bendecido.", 200, "🍀"),
-    Potion("Oportunidad", "Ganas 100 puntos", "Aprovechaste la oportunidad.", 100, "🌟"),
+    Potion("Fenix", "Si la tomas, ganas una vida", "Has renacido de las cenizas.", 1, "🐦"),
+    Potion("Poder", "Si la tomas, ganas 330 puntos", "Se te ha otorgado el poder de los dioses.", 300, "🔥"),
+    Potion("Suerte", "Si la tomas, ganas 200 puntos", "Los dioses te han bendecido.", 200, "🍀"),
+    Potion("Oportunidad", "Si la tomas, ganas 100 puntos", "Aprovechaste la oportunidad.", 100, "🌟"),
 ]

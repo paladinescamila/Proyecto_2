@@ -1,4 +1,5 @@
-from openal import oalQuit
+from openal import *
+import time
 from GameUI import GameUI
 
 gameUI = GameUI()
@@ -6,28 +7,33 @@ gameUI = GameUI()
 def main():
     while (True):
 
+        # Comandos especiales
+        if (gameUI.input == "menu"): gameUI.goToState("menu")
+        elif (gameUI.input == "exit"): gameUI.goToState("exit")
+        elif (gameUI.input == "stats"): gameUI.goToState("stats")
+        elif (gameUI.input == "potions"): gameUI.goToState("drink-potion")
+
         # Estados generales
-        if (gameUI.state == "menu"): gameUI.showMenu()
-        elif (gameUI.state == "game"): gameUI.showGame()
-        elif (gameUI.state == "settings"): gameUI.showSettings()
-        elif (gameUI.state == "rules"): gameUI.showRules()
+        if (gameUI.state == "menu"): gameUI.MenuScreen()
+        elif (gameUI.state == "game"): gameUI.GameScreen()
+        elif (gameUI.state == "settings"): gameUI.SettingsScreen()
+        elif (gameUI.state == "rules"): gameUI.RulesScreen()
         elif (gameUI.state == "exit"): break
 
         # Juego
-        elif (gameUI.state == "stats"): gameUI.showStats()
-        elif (gameUI.state == "history"): gameUI.showHistory()
+        elif (gameUI.state == "stats"): gameUI.StatsScreen()
+        elif (gameUI.state == "history"): gameUI.HistoryScreen()
         elif (gameUI.state == "walk"): gameUI.walk()
         elif (gameUI.state == "find-potion"): gameUI.findPotion()
+        elif (gameUI.state == "drink-potion"): gameUI.drinkPotion()
         elif (gameUI.state == "battle"): gameUI.battle()
         elif (gameUI.state == "final-battle"): gameUI.finalBattle()
 
         # Configuraciones
-        elif (gameUI.state == "music-settings"): gameUI.showMusicSettings()
-        elif (gameUI.state == "sound-settings"): gameUI.showSoundSettings()
+        elif (gameUI.state == "music-settings"): gameUI.MusicSettingsScreen()
+        elif (gameUI.state == "sound-settings"): gameUI.SoundSettingsScreen()
 
-        # Comandos especiales
-        if (gameUI.input == "stats"): gameUI.goToState("stats")
-        elif (gameUI.input == "exit"): gameUI.goToState("game")
+    # Se liberan recursos    
+    oalQuit()
 
 main()
-oalQuit()
