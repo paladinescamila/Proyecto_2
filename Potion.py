@@ -7,9 +7,10 @@ class Potion:
         self.value = value
         self.emoji = emoji
 
+
 potions = [
-    Potion("Fenix", "Si la tomas, ganas una vida", "Has renacido de las cenizas.", 1, "🐦"),
-    Potion("Poder", "Si la tomas, ganas 330 puntos", "Se te ha otorgado el poder de los dioses.", 300, "🔥"),
-    Potion("Suerte", "Si la tomas, ganas 200 puntos", "Los dioses te han bendecido.", 200, "🍀"),
-    Potion("Oportunidad", "Si la tomas, ganas 100 puntos", "Aprovechaste la oportunidad.", 100, "🌟"),
+    Potion("Fenix", "Si la bebes, ganas una vida", "Has renacido de las cenizas.", 1, "🐦"),
+    Potion("Poder", "Si la bebes, ganas 300 puntos", "Se te ha otorgado el poder de los dioses.", 300, "🔥"),
+    Potion("Suerte", "Si la bebes, ganas 200 puntos", "Los dioses te han bendecido.", 200, "🍀"),
+    Potion("Oportunidad", "Si la bebes, ganas 100 puntos", "Aprovechaste la oportunidad.", 100, "🌟"),
 ]

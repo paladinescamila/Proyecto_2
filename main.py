@@ -1,6 +1,4 @@
-from openal import *
-import time
-
+from openal import oalQuit
 from GameUI import GameUI
 
 def main():

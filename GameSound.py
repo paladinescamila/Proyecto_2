@@ -1,5 +1,5 @@
 from time import sleep
-from openal import *
+from openal import oalOpen, AL_PLAYING
 
 class GameSound:
 
@@ -9,7 +9,11 @@ class GameSound:
         self.soundVolume = 100
 
         # Música de fondo
+        self.playingMusic = oalOpen("./sounds/playing-music.wav")
         self.menuMusic = oalOpen("./sounds/menu-music.wav")
+        self.finalBattleMusic = oalOpen("./sounds/final-battle-music.wav")
+        self.winGameMusic = oalOpen("./sounds/win-game-music.wav")
+        self.loseGameMusic = oalOpen("./sounds/lose-game-music.wav")
 
         # Efectos de sonido
         self.winSound = oalOpen("./sounds/win.wav")
@@ -29,7 +33,11 @@ class GameSound:
 
     def setMusicVolume(self, volume):
         self.musicVolume = int(volume)
-        self.menuMusic.set_gain(self.musicVolume * 0.0001)
+        self.playingMusic.set_gain(self.musicVolume * 0.001)
+        self.menuMusic.set_gain(self.musicVolume * 0.0017)
+        self.finalBattleMusic.set_gain(self.musicVolume * 0.001)
+        self.winGameMusic.set_gain(self.musicVolume * 0.001)
+        self.loseGameMusic.set_gain(self.musicVolume * 0.001)
     
 
     def setSoundVolume(self, volume):
@@ -55,20 +63,37 @@ class GameSound:
     
 
     def playMusic(self, source):
+        # Detiene la música actual
+        if (self.playingMusic.get_state() == AL_PLAYING): self.playingMusic.stop()
+        if (self.menuMusic.get_state() == AL_PLAYING): self.menuMusic.stop()
+        if (self.finalBattleMusic.get_state() == AL_PLAYING): self.finalBattleMusic.stop()
+        if (self.winGameMusic.get_state() == AL_PLAYING): self.winGameMusic.stop()
+        if (self.loseGameMusic.get_state() == AL_PLAYING): self.loseGameMusic.stop()
+
+        # Reproduce la nueva música
         source.set_looping(True)
         source.play()
     
 
     def playSound(self, source, direction = "front", distance = 0):
+        # Reproduce el sonido
         source.set_position(self.getPosition(direction, distance))
         source.set_looping(False)
         source.play()
 
+        # Espera a que termine de reproducirse
         while source.get_state() == AL_PLAYING: sleep(1)
 
 
+    # Reproducción de música de fondo
+    def playPlayingMusic(self): self.playMusic(self.playingMusic)
     def playMenuMusic(self): self.playMusic(self.menuMusic)
+    def playFinalBattleMusic(self): self.playMusic(self.finalBattleMusic)
+    def playWinGameMusic(self): self.playMusic(self.winGameMusic)
+    def playLoseGameMusic(self): self.playMusic(self.loseGameMusic)
 
+
+    # Reproducción de efectos de sonido
     def playWin(self): self.playSound(self.winSound)
     def playLose(self): self.playSound(self.loseSound)
     def playGameOver(self): self.playSound(self.gameOverSound)

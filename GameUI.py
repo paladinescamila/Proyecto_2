@@ -14,6 +14,7 @@ MAX_WEAPONS = 2
 MAX_POTIONS = 50
 INITIAL_LIFES = 3
 INITIAL_POINTS = 200
+BATTLES_WON_BEFORE_FINAL_BATTLE = 10
 
 class GameUI:
 
@@ -25,7 +26,6 @@ class GameUI:
         self.wonnedBattles = 0
         self.weaponInHand = self.weapons[0]
         self.hasStarted = False
-
         self.menuScreen()
 
 
@@ -41,7 +41,7 @@ class GameUI:
         return value
 
     
-    def execute(self, command):
+    def executeCommand(self, command):
         if (command == "menu"): self.menuScreen()
         elif (command == "weapons"): self.weaponsScreen()
         elif (command == "potions"): self.potionsScreen()
@@ -89,21 +89,21 @@ class GameUI:
 
 
     def menuScreen(self):
+        sound.playMenuMusic()
         self.headerScreen(GAME_NAME, "big")
         print("1. Jugar")
         print("2. Configuraciones")
-        print("3. Reglas del juego")
-        print("4. Salir")
+        print("3. Salir")
         option = self.askToPlayer("Elige una opción")
 
         if option == "1": self.gameScreen()
         elif option == "2": self.settingsScreen()
-        elif option == "3": self.rulesScreen()
-        elif option == "4": exit()
+        elif option == "3": exit()
         else: self.menuScreen()
 
 
     def gameScreen(self):
+        sound.playPlayingMusic()
         if not self.hasStarted:
             self.printWithTime("Acabas de despertar en una habitación oscura y sombría")
             self.printWithTime("No recuerdas nada, ni siquiera tu nombre")
@@ -126,7 +126,8 @@ class GameUI:
             self.printWithTime("Observas un arma y una poción")
             self.printWithTime(f'El arma es {self.weapons[0].usedName} {self.weapons[0].emoji}')
             self.printWithTime(f'La poción tiene una etiqueta que dice "{self.potions[0].name} {self.potions[0].emoji}"')
-            self.printWithTime("Te pones en pie y te diriges a la puerta")
+            print("Te pones en pie y te diriges a la puerta")
+            sound.playWalk()
             print("Abres la puerta...")
             sound.playOpenDoor()
             self.printWithTime("Observas un pequeño pasillo oscuro")
@@ -134,8 +135,7 @@ class GameUI:
             self.printWithTime("Sales de la casa")
 
             self.hasStarted = True
-
-        self.walk()
+            self.walk()
 
 
     def walk(self):
@@ -182,25 +182,12 @@ class GameUI:
         else: self.soundSettingsScreen()
 
 
-    def rulesScreen(self):
-        self.headerScreen("Reglas del juego")
-        print(f'¡Bienvenido a {GAME_NAME}!')
-        print("En esta aventura deberás enfrentarte a diferentes enemigos para sobrevivir en el juego.")
-        print("Tu objetivo principal es buscar la corona perdida, que se encuentra en el castillo de la montaña.") 
-        print("Pero para llegar allí deberás vencer a los enemigos que se encuentran en el camino.")
-        print("Cada vez que ganes una batalla podrás tomar el arma del enemigo.")
-        print(f'Puedes guardar hasta {MAX_WEAPONS} armas y {MAX_POTIONS} pociones. Cada arma tiene un daño diferente.')
-        print(f'Comienzas el juego con {INITIAL_LIFES} vidas, {INITIAL_POINTS} puntos, un arma y una pocion aleatorias.')        
-        self.askToPlayer("Presiona cualquier tecla para volver al menú")
-        self.menuScreen()
-
-
     def statsScreen(self):
-        print("~" * MEDIUM_STRING_LENGTH)
-        print(f'❤️  Vidas: {self.lifes}', end=" " * 5)
-        print(f'⭐ Puntos: {self.points}', end=" " * 5)
-        print(f'⚔️  Batallas ganadas: {self.wonnedBattles}')
-        print("~" * MEDIUM_STRING_LENGTH)
+        lifesText = f'❤️  Vidas: {self.lifes}'
+        pointsText = f'⭐ Puntos: {self.points}'
+        wonnedBattlesText = f'🏆  Batallas ganadas: {self.wonnedBattles}'
+        fullText = f'{lifesText}     {pointsText}     {wonnedBattlesText}'
+        self.headerScreen(fullText, "big")
     
 
     def weaponsScreen(self):
@@ -210,22 +197,22 @@ class GameUI:
 
         for i in range(n):
             weapon = self.weapons[i]
-            inHandMessage = " (en las manos)" if weapon.name == self.weaponInHand.name else ""
-            print(f'{i + 1}. {weapon.name} {weapon.emoji} (Daño: {weapon.damage}) {inHandMessage}')
+            print(f'{i + 1}. {weapon.name} {weapon.emoji} (Daño: {weapon.damage})')
         
+        print(f'Arma en las manos: {self.weaponInHand.name} {self.weaponInHand.emoji}')
         print("Ingresa el número del arma que quieres llevar en las manos o presiona cualquier otra tecla para cancelar")
 
         while True:
             position = self.askToPlayer("Elige una opción")
 
-            if position in SPECIAL_COMMANDS: self.execute(position)
+            if position in SPECIAL_COMMANDS: self.executeCommand(position)
             else:
                 if position in availablePositions:
                     self.weaponInHand = self.weapons[int(position) - 1]
                     print(f'Has elegido {self.weaponInHand.usedName} {self.weaponInHand.emoji}')
 
                     option = self.askToPlayer("Presiona cualquier tecla para volver atrás")
-                    if option in SPECIAL_COMMANDS: self.execute(option)
+                    if option in SPECIAL_COMMANDS: self.executeCommand(option)
                 else: print("No seleccionaste un arma")
                 return
 
@@ -238,7 +225,7 @@ class GameUI:
         if n == 0:
             print("No tienes pociones")
             option = self.askToPlayer("Presiona cualquier tecla para volver atrás")
-            if option in SPECIAL_COMMANDS: self.execute(option)
+            if option in SPECIAL_COMMANDS: self.executeCommand(option)
         else:
             for i in range(n):
                 potion = self.potions[i]
@@ -249,7 +236,7 @@ class GameUI:
             while True:
                 position = self.askToPlayer("Elige una opción")
 
-                if position in SPECIAL_COMMANDS: self.execute(position)
+                if position in SPECIAL_COMMANDS: self.executeCommand(position)
                 else:            
                     if position in availablePositions:
                         potionToDrink = self.potions[int(position) - 1]
@@ -264,7 +251,7 @@ class GameUI:
                         elif potionToDrink.name == "Oportunidad": self.addPoints(potionToDrink.value)
 
                         option = self.askToPlayer("Presiona cualquier tecla para volver atrás")
-                        if option in SPECIAL_COMMANDS: self.execute(option)
+                        if option in SPECIAL_COMMANDS: self.executeCommand(option)
                     else: print("No seleccionaste una poción")
                     return
 
@@ -276,7 +263,7 @@ class GameUI:
         while True:
             option = self.askToPlayer("¿Quieres guardar el arma? (s/N)")
 
-            if option in SPECIAL_COMMANDS: self.execute(option)
+            if option in SPECIAL_COMMANDS: self.executeCommand(option)
             else:
                 if option == "S" or option == "s":
                     if n < MAX_WEAPONS:
@@ -292,7 +279,7 @@ class GameUI:
                         while True:
                             position = self.askToPlayer("¿Qué arma quieres reemplazar? (cualquier otra tecla para cancelar)")
 
-                            if position in SPECIAL_COMMANDS: self.execute(position)
+                            if position in SPECIAL_COMMANDS: self.executeCommand(position)
                             else:
                                 if position in availablePositions:
                                     oldWeapon = self.weapons[int(position) - 1]
@@ -313,7 +300,7 @@ class GameUI:
         while True:
             option = self.askToPlayer("¿Quieres guardarla? (s/N)")
 
-            if option in SPECIAL_COMMANDS: self.execute(option)
+            if option in SPECIAL_COMMANDS: self.executeCommand(option)
             else:
                 if option == "S" or option == "s":
                     if n < MAX_POTIONS:
@@ -329,7 +316,7 @@ class GameUI:
                         while True:
                             position = self.askToPlayer("¿Qué poción quieres reemplazar? (cualquier otra tecla para cancelar)")
 
-                            if position in SPECIAL_COMMANDS: self.execute(position)
+                            if position in SPECIAL_COMMANDS: self.executeCommand(position)
                             else:
                                 if position in availablePositions:
                                     oldPotion = self.potions[int(position) - 1]
@@ -352,7 +339,7 @@ class GameUI:
         while True:
             playerDirection = self.askToPlayer("¿Quieres atacar a la (I)zquierda o a la (d)erecha?")
 
-            if playerDirection in SPECIAL_COMMANDS: self.execute(playerDirection)
+            if playerDirection in SPECIAL_COMMANDS: self.executeCommand(playerDirection)
             else:
                 if playerDirection in ["I", "i"]: playerDirection, playerDirectionName = "left", "izquierda"
                 elif playerDirection in ["D", "d"]: playerDirection, playerDirectionName = "right", "derecha"
@@ -366,45 +353,63 @@ class GameUI:
                 if win:
                     print("Has ganado esta batalla 😎")
                     sound.playWin()
-                    self.addPoints(myWeapon.damage)
                     self.wonnedBattles += 1
+                    self.addPoints(myWeapon.damage)
                     self.saveWeapon(enemyWeapon)
                 else:
                     print("Has perdido esta batalla ☹️")
                     sound.playLose()
                     self.addPoints(-enemyWeapon.damage)
 
-                if self.wonnedBattles == 10:
+                if self.wonnedBattles == BATTLES_WON_BEFORE_FINAL_BATTLE:
                     return self.finalBattle()
                 return
 
 
     def finalBattle(self):
+        sound.playFinalBattleMusic()
         self.printWithTime("Por fin has llegado al castillo de la montaña")
         self.printWithTime("De repente una voz detrás tuyo te sobresalta:")
         self.printWithTime("")
-        self.printWithTime("   Te he estado esperando, estaba seguro que llegarías hasta aquí")
-        self.printWithTime("   Ella te dio y te dijo lo necesario para volver a tu mundo")
-        self.printWithTime("   Pero por supuesto, nunca te dijo quién te esperaría aquí")
-        self.printWithTime("   Apuesto a que ni siquiera sabes quién es ella")
-        self.printWithTime("   Apuesto a que ni siquiera sabes quién eres")
-        self.printWithTime("   Pero no te preocupes, yo te lo diré, eso no importa")
-        self.printWithTime("   En este mundo glorioso para mí, no voy a permitir que ganes")
+        self.printWithTime(" - Te he estado esperando, estaba seguro que llegarías hasta aquí")
+        self.printWithTime(" - Ella te dio y te dijo lo necesario para volver a tu mundo")
+        self.printWithTime(" - Pero por supuesto, nunca te dijo quién te esperaría aquí")
+        self.printWithTime(" - Apuesto a que ni siquiera sabes quién es ella")
+        self.printWithTime(" - Apuesto a que ni siquiera sabes quién eres")
+        self.printWithTime(" - Pero no te preocupes, yo te lo diré, eso no importa")
+        self.printWithTime(" - En este mundo glorioso para mí, no voy a permitir que ganes")
         self.printWithTime("")
         self.printWithTime("Tu enemigo saca su mejor arma y te ataca")
 
-        myWeapon = self.weaponInHand
+        while True:
+            option = self.askToPlayer("Presiona cualquier tecla para atacar")
 
-        self.printWithTime(f'Atacando con {myWeapon.usedName}')
-        win = choice([True, False])
+            if option in SPECIAL_COMMANDS: self.executeCommand(option)
+            else:
+                self.printWithTime(f'Atacando con {self.weaponInHand.usedName}')
+                win = choice([True, False])
 
-        if win:
-            print("Has ganado el juego 😎")
-            sound.playWin()
-            self.__init__()
-            self.menuScreen()
-        else:
-            print("Has perdido el juego ☹️")
-            sound.playGameOver()
-            self.__init__()
-            self.menuScreen()
+                if win:
+                    sound.playWinGameMusic()
+                    print("Has ganado contra tu enemigo 😎")
+                    sound.playWin()
+                    self.printWithTime("Finalmente lo has derrotado y ahora te diriges al interior del castillo")
+                    sound.playWalk()
+                    self.printWithTime("Al entrar en la habitación principal encuentras la corona")
+                    self.printWithTime("La tomas en tus manos y tocas el rubí que está en su centro")
+                    self.printWithTime("De repente te sientes débil y caes al suelo")
+                    self.printWithTime("Te despiertas en tu cama, todo ha sido un sueño")
+
+                    self.__init__()
+                    self.menuScreen()
+                else:
+                    sound.playLoseGameMusic()
+                    print("Has perdido contra tu enemigo ☹️")
+                    sound.playGameOver()
+                    self.printWithTime("Caes al suelo, dando tu último aliento")
+                    self.printWithTime("Tu enemigo te observa con una sonrisa y te dice:")
+                    self.printWithTime(" - No eres digno de la corona, pero no te preocupes, volverás a intentarlo")
+                    self.printWithTime("Te despiertas en tu cama, todo ha sido un sueño")
+                    self.__init__()
+                    self.menuScreen()
+                return
