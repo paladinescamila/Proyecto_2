@@ -7,8 +7,8 @@ class Weapon:
         self.usedName = usedName
 
 weapons = [
-    Weapon("Arco", 20, "🏹", "un arco"),
-    Weapon("Daga", 30, "🔪", "una daga"),
+    Weapon("Daga", 20, "🔪", "una daga"),
+    Weapon("Hacha", 30, "🪓", "una hacha"),
     Weapon("Mazo", 40, "🔨", "un mazo"),
     Weapon("Ballesta", 50, "🏹", "una ballesta"),
     Weapon("Espada", 70, "🗡️ ", "una espada"),

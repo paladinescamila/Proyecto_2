@@ -4,6 +4,7 @@ from openal import *
 class GameSound:
 
     def __init__(self):
+        # Volumen
         self.musicVolume = 100
         self.soundVolume = 100
 
@@ -20,6 +21,7 @@ class GameSound:
         self.openPotionSound = oalOpen("./sounds/open-potion.wav")
         self.screamSound = oalOpen("./sounds/scream.wav")
 
+        # Inicialización
         self.setMusicVolume(self.musicVolume)
         self.setSoundVolume(self.soundVolume)
         self.playMenuMusic()
@@ -62,8 +64,7 @@ class GameSound:
         source.set_looping(False)
         source.play()
 
-        while source.get_state() == AL_PLAYING:
-            sleep(1)
+        while source.get_state() == AL_PLAYING: sleep(1)
 
 
     def playMenuMusic(self): self.playMusic(self.menuMusic)
