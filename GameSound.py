@@ -79,4 +79,4 @@ class GameSound:
     def playScream(self, direction): self.playSound(self.screamSound, direction, 15)
             
     
-gameSound = GameSound()
+sound = GameSound()
