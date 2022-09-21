@@ -4,7 +4,7 @@ from openal import oalOpen, AL_PLAYING
 class GameSound:
 
     def __init__(self):
-        # Volumen
+        # Volumen inicial
         self.musicVolume = 100
         self.soundVolume = 100
 
@@ -31,6 +31,7 @@ class GameSound:
         self.playMenuMusic()
 
 
+    # Establece el volumen de la música de fondo (%)
     def setMusicVolume(self, volume):
         self.musicVolume = int(volume)
         self.playingMusic.set_gain(self.musicVolume * 0.001)
@@ -38,8 +39,9 @@ class GameSound:
         self.finalBattleMusic.set_gain(self.musicVolume * 0.001)
         self.winGameMusic.set_gain(self.musicVolume * 0.001)
         self.loseGameMusic.set_gain(self.musicVolume * 0.001)
-    
 
+
+    # Establece el volumen de los efectos de sonido (%)
     def setSoundVolume(self, volume):
         self.soundVolume = int(volume)
         self.winSound.set_gain(self.soundVolume * 0.01)
@@ -52,6 +54,7 @@ class GameSound:
         self.screamSound.set_gain(self.soundVolume * 0.01)
 
 
+    # Devuelve una posición según la dirección y la distancia
     def getPosition(self, direction, distance):
         if direction == "left": return (-distance, 0, 0)
         elif direction == "right": return (distance, 0, 0)
@@ -62,6 +65,7 @@ class GameSound:
         else: return (0, 0, 0)
     
 
+    # Reproduce una canción de fondo
     def playMusic(self, source):
         # Detiene la música actual
         if (self.playingMusic.get_state() == AL_PLAYING): self.playingMusic.stop()
@@ -75,6 +79,7 @@ class GameSound:
         source.play()
     
 
+    # Reproduce un efecto de sonido
     def playSound(self, source, direction = "front", distance = 0):
         # Reproduce el sonido
         source.set_position(self.getPosition(direction, distance))
