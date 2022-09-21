@@ -1,4 +1,5 @@
 from sys import exit
+from openal import oalQuit
 from random import choice
 from time import sleep
 
@@ -15,6 +16,7 @@ MAX_POTIONS = 10
 INITIAL_LIFES = 3
 INITIAL_POINTS = 200
 BATTLES_WON_BEFORE_FINAL_BATTLE = 10
+POSIBLE_VOLUME = [str(i) for i in range(101)]
 
 class GameUI:
 
@@ -104,7 +106,7 @@ class GameUI:
 
         if option == "1": self.gameScreen()
         elif option == "2": self.settingsScreen()
-        elif option == "3": exit()
+        elif option == "3": oalQuit() ; exit()
         else: self.menuScreen()
 
 
@@ -176,8 +178,8 @@ class GameUI:
         self.headerScreen("Configuraciones de la música")
         volume = self.askToPlayer("Ingresa el volumen de la música (0 - 100)")
 
-        if float(volume) >= 0 and float(volume) <= 100:
-            sound.setMusicVolume(float(volume))
+        if volume in POSIBLE_VOLUME:
+            sound.setMusicVolume(int(volume))
             self.settingsScreen()
         else: self.musicSettingsScreen()
 
@@ -187,8 +189,8 @@ class GameUI:
         self.headerScreen("Configuraciones de los efectos de sonido")
         volume = self.askToPlayer("Ingresa el volumen de los efectos de sonido (0 - 100)")
 
-        if float(volume) >= 0 and float(volume) <= 5:
-            sound.setSoundVolume(float(volume))
+        if volume in POSIBLE_VOLUME:
+            sound.setSoundVolume(int(volume))
             self.settingsScreen()
         else: self.soundSettingsScreen()
 
@@ -277,7 +279,7 @@ class GameUI:
 
             if option in SPECIAL_COMMANDS: self.executeCommand(option)
             else:
-                if option == "S" or option == "s":
+                if option in ["S", "s"]:
                     if n < MAX_WEAPONS:
                         self.weapons.append(newWeapon)
                         self.printWithTime(f'Has guardado {newWeapon.usedName} {newWeapon.emoji}')
@@ -315,7 +317,7 @@ class GameUI:
 
             if option in SPECIAL_COMMANDS: self.executeCommand(option)
             else:
-                if option == "S" or option == "s":
+                if option in ["S", "s"]:
                     if n < MAX_POTIONS:
                         self.potions.append(newPotion)
                         print(f'Has guardado la poción "{newPotion.name} {newPotion.emoji}"')
