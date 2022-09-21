@@ -7,6 +7,15 @@ Este es el proyecto #2 de la asignatura "Sistemas de Interacción". Consiste en 
 -   Andrés Velasquez
 -   Camila Paladines
 
+## Requisitos del sistema
+-   **Sistema Operativo**: Windows / 7 / 8 / 8.1 / 10.
+-   **Procesador:** 2.0 GHz o mejor.
+-   **Memoria:** 1 GB de RAM o más.
+-   **Gráficos:** 1280×720 de resolución mínima, 512 MB video RAM recomendada.
+-   **DirectX:** Versión 11.
+-   **Almacenamiento:** 250 MB de espacio disponible.
+-   **Tarjeta de sonido:** Compatible con DirectX 11.
+
 ## Ejecución
 
 1. Instalar PyOpenAL
